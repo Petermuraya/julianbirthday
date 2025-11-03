@@ -7,10 +7,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyBwM6bYlWhTaMEGGC61rhAKDLTaUkiPdzk",
   authDomain: "birthday-f70ab.firebaseapp.com",
   projectId: "birthday-f70ab",
-  storageBucket: "birthday-f70ab.appspot.com",  // Corrected storage URL
+  storageBucket: "birthday-f70ab.appspot.com",  
   messagingSenderId: "540378444726",
   appId: "1:540378444726:web:20bbf0ce1f97cdf70a0717",
-  measurementId: "G-32X01CMT27" // You can keep this if you later want to add analytics
+  measurementId: "G-32X01CMT27" 
 };
 
 // Initialize Firebase

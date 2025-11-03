@@ -1,5 +1,5 @@
-import  { useState, useEffect } from 'react'; // Import hooks from React
-import './CountdownTile.css'; // Ensure your CSS is correctly imported
+import { useState, useEffect } from 'react';
+import './CountdownTile.css';
 
 const CountdownTile = () => {
   const [timeRemaining, setTimeRemaining] = useState({
@@ -9,44 +9,47 @@ const CountdownTile = () => {
     seconds: 0,
   });
 
-  // Function to calculate the next Sunday date
-  const getNextSunday = () => {
+  // Function to get the next occurrence of November 6
+  const getNextBirthday = () => {
     const now = new Date();
-    const currentDay = now.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
-    const daysUntilNextSunday = (7 - currentDay) % 7; // Calculate days until next Sunday
+    const currentYear = now.getFullYear();
+    const birthday = new Date(currentYear, 10, 6); // Month is 0-indexed (10 = November)
 
-    // If today is Sunday, set the target to the next Sunday
-    const nextSunday = new Date(now);
-    nextSunday.setDate(now.getDate() + daysUntilNextSunday + 7); // add 7 to get the following Sunday
+    // If the birthday this year has already passed, use next year
+    if (now > birthday) {
+      birthday.setFullYear(currentYear + 1);
+    }
 
-    // Set the target date at midnight for the next Sunday
-    nextSunday.setHours(0, 0, 0, 0); // Set to 00:00:00:000 (midnight)
+    // Set birthday time to midnight in Nairobi timezone
+    birthday.setHours(0, 0, 0, 0);
 
-    return nextSunday;
+    return birthday;
   };
 
-  const targetDate = getNextSunday().getTime(); // Get the target date as a timestamp
-
   useEffect(() => {
+    const targetDate = getNextBirthday().getTime();
+
     const interval = setInterval(() => {
       const now = new Date();
-      const nowInEAT = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })); // Get time in Nairobi timezone
-      const distance = targetDate - nowInEAT.getTime(); // Calculate the remaining time
+      const nowInEAT = new Date(
+        now.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })
+      );
+      const distance = targetDate - nowInEAT.getTime();
 
       if (distance <= 0) {
-        clearInterval(interval); // Stop the countdown when the target time is reached
+        clearInterval(interval);
       } else {
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        setTimeRemaining({ days, hours, minutes, seconds }); // Update the state
+        setTimeRemaining({ days, hours, minutes, seconds });
       }
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup the interval on component unmount
-  }, [targetDate]); // The effect runs again only if targetDate changes
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="countdown-tile">
